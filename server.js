@@ -4,29 +4,23 @@ const express = require('express');
 const path = require('path');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const compression = require('compression');
+const dotenv = require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 5500;
-// const HOST = process.env.HOST;
+const PORT = 5500;
 
 app.use(compression());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/:id', express.static(path.join(__dirname, 'public')));
 
-app.use('/product/:id', createProxyMiddleware({ target: 'http://18.216.146.228/', changeOrigin: true })); //jake
-app.use('/product/shop/:shopId', createProxyMiddleware({ target: 'http://18.216.146.228/', changeOrigin: true })); //jake
-app.use('/product/colors/:id', createProxyMiddleware({ target: 'http://18.216.146.228/', changeOrigin: true })); //jake
-app.use('/reviews/:id', createProxyMiddleware({target: 'http://54.219.183.228/', changeOrigin: true })); //carlitos
-app.use('/api/carousel/:id', createProxyMiddleware({target: 'http://54.219.183.228/', changeOrigin: true })); //carlitos
-app.use('/api/carouselEnlarged/:id', createProxyMiddleware({ target: 'http://54.219.183.228/', changeOrigin: true }));
-app.use('/products/:id', createProxyMiddleware({ target: 'http://54.177.27.146/', changeOrigin: true })); //hieu
-app.use('/get/random', createProxyMiddleware({ target: 'http://54.177.27.146/', changeOrigin: true })); //hieu
+app.use('/product/:id', createProxyMiddleware({ target: process.env.INFO_URL, changeOrigin: true }));
+app.use('/product/shop/:shopId', createProxyMiddleware({ target:  process.env.INFO_URL, changeOrigin: true }));
+app.use('/product/colors/:id', createProxyMiddleware({ target:  process.env.INFO_URL, changeOrigin: true }));
+app.use('/reviews/:id', createProxyMiddleware({target: process.env.REVIEWS_URL, changeOrigin: true }));
+app.use('/api/carousel/:id', createProxyMiddleware({target: process.env.CAROUSEL_URL, changeOrigin: true }));
+app.use('/api/carouselEnlarged/:id', createProxyMiddleware({ target: process.env.CAROUSEL_URL, changeOrigin: true }));
+app.use('/products/:id', createProxyMiddleware({ target: process.env.SUGGESTED_URL, changeOrigin: true }));
+app.use('/get/random', createProxyMiddleware({ target: process.env.SUGGESTED_URL, changeOrigin: true }));
 
 
-app.listen(PORT, (err) => {
-  if (err) {
-    console.error('Error starting  server', err);
-  } else {
-    console.log(`server listening at http://localhost:${PORT}`);
-  }
-});
+app.listen(PORT, () => console.log(`server listening at http://localhost:${PORT}`));
